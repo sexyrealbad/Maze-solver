@@ -1,0 +1,43 @@
+name: Solve Maze
+
+on:
+  push:
+    paths:
+      - input/*
+    branches:
+      - main
+
+jobs:
+  solve-maze:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          pip install pillow pygithub
+
+      # Run the solving script
+      - name: Solve maze
+        run: |
+          python solve_maze.py
+
+      # Commit and push solved maze
+      - name: Upload solved maze
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@github.com"
+          mv solved_maze.png output/
+          git add output/
+          git commit -m "Add solved maze"
+          git push
